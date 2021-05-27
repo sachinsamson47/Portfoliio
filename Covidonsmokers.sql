@@ -60,7 +60,7 @@ SELECT Max(Cast(male_smokers AS DECIMAL(10, 5)))     AS male_smoker_percent,
        Max(Cast(female_smokers AS DECIMAL(10, 5)))   AS female_smoker_percent,
        Max(sex_ratio)                                AS sexratio,
        Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) 
-													 AS males,
+						     AS males,
        Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(
                            population) )
                                                      AS females
@@ -79,9 +79,9 @@ SELECT Max(Cast(male_smokers AS DECIMAL(10, 2)))         AS male_smoker_percent,
        Max(Cast(female_smokers AS DECIMAL(10, 2)))       AS female_smoker_percent,
        Max(sex_ratio)                                    AS sexratio,
        Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)
-													     AS males,
+		                                         AS males,
        Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)                           
-														 AS females
+			                                 AS females
 FROM   data
        JOIN dbo.sexratio
          ON data.location = sexratio.country
@@ -97,13 +97,13 @@ SELECT Max(Cast(male_smokers AS DECIMAL(10, 2)))         AS male_smoker_percent,
        Max(Cast(female_smokers AS DECIMAL(10, 2)))       AS female_smoker_percent,
        Max(sex_ratio)                                    AS sexratio,
        Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)
-													     AS males,
+							 AS males,
        Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)                           
-														 AS females,
-	   Round((Max(Cast(male_smokers AS DECIMAL(10, 2)))*Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
-														 AS male_smokers,
-	   Round((Max(Cast(female_smokers AS DECIMAL(10, 2)))*Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
-														 AS female_smokers
+				                         AS females,
+       Round((Max(Cast(male_smokers AS DECIMAL(10, 2)))*Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
+							 AS male_smokers,
+       Round((Max(Cast(female_smokers AS DECIMAL(10, 2)))*Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
+							 AS female_smokers
 FROM   data
        JOIN dbo.sexratio
          ON data.location = sexratio.country
