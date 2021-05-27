@@ -110,3 +110,86 @@ FROM   data
 WHERE  continent IS NOT NULL
 GROUP  BY location
 ORDER  BY 4 DESC 
+
+--Calcualting percentage of smokers by country
+SELECT Max(Cast(male_smokers AS DECIMAL(10, 2)))         AS male_smoker_percent,
+       location,
+       Max(Cast(total_deaths AS INT))                    AS deaths,
+       Max(population)                                   AS population,
+       Max(Cast(female_smokers AS DECIMAL(10, 2)))       AS female_smoker_percent,
+       Max(sex_ratio)                                    AS sexratio,
+       Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)
+													     AS males,
+       Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)                           
+														 AS females,
+	   Round((Max(Cast(male_smokers AS DECIMAL(10, 2)))*Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
+														 AS male_smokers,
+	   Round((Max(Cast(female_smokers AS DECIMAL(10, 2)))*Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
+														 AS female_smokers,
+	   Round(((Round((Max(Cast(male_smokers AS DECIMAL(10, 2)))*Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0) +
+	   Round((Max(Cast(female_smokers AS DECIMAL(10, 2)))*Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0))/(Max(population)))*100,2)
+														 AS Percentage_of_smokers
+														 
+FROM   data
+       JOIN dbo.sexratio
+         ON data.location = sexratio.country
+WHERE  continent IS NOT NULL
+GROUP  BY location
+ORDER  BY 4 DESC 
+
+--Lets add death percentage to the table
+SELECT Max(Cast(male_smokers AS DECIMAL(10, 2)))         AS male_smoker_percent,
+       location,
+       Max(Cast(total_deaths AS INT))                    AS deaths,
+       Max(population)                                   AS population,
+       Max(Cast(female_smokers AS DECIMAL(10, 2)))       AS female_smoker_percent,
+       Max(sex_ratio)                                    AS sexratio,
+       Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)
+													     AS males,
+       Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)                           
+														 AS females,
+	   Round((Max(Cast(male_smokers AS DECIMAL(10, 2)))*Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
+														 AS male_smokers,
+	   Round((Max(Cast(female_smokers AS DECIMAL(10, 2)))*Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
+														 AS female_smokers,
+	   Round(((Round((Max(Cast(male_smokers AS DECIMAL(10, 2)))*Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0) +
+	   Round((Max(Cast(female_smokers AS DECIMAL(10, 2)))*Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0))/(Max(population)))*100,2)
+														 AS Percentage_of_smokers,
+	   Round(((Max(Cast(total_deaths AS INT)))/Max(population))*100,4)
+														 AS Death_percentage
+FROM   data
+       JOIN dbo.sexratio
+         ON data.location = sexratio.country
+WHERE  continent IS NOT NULL
+GROUP  BY location
+ORDER  BY 11 DESC,12 DESC 
+
+--Saving the table as a view 
+CREATE VIEW smoker_stats AS
+SELECT Max(Cast(male_smokers AS DECIMAL(10, 2)))         AS male_smoker_percent,
+       location,
+       Max(Cast(total_deaths AS INT))                    AS deaths,
+       Max(population)                                   AS population,
+       Max(Cast(female_smokers AS DECIMAL(10, 2)))       AS female_smoker_percent,
+       Max(sex_ratio)                                    AS sexratio,
+       Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)
+													     AS males,
+       Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0)                           
+														 AS females,
+	   Round((Max(Cast(male_smokers AS DECIMAL(10, 2)))*Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
+														 AS male_smokers,
+	   Round((Max(Cast(female_smokers AS DECIMAL(10, 2)))*Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0)
+														 AS female_smokers,
+	   Round(((Round((Max(Cast(male_smokers AS DECIMAL(10, 2)))*Round(( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0) +
+	   Round((Max(Cast(female_smokers AS DECIMAL(10, 2)))*Round(Max(population) - ( Max(sex_ratio) / ( Max(sex_ratio) + 1 ) * Max(population) ), 0))/100,0))/(Max(population)))*100,2)
+														 AS Percentage_of_smokers,
+	   Round(((Max(Cast(total_deaths AS INT)))/Max(population))*100,4)
+														 AS Death_percentage
+FROM   data
+       JOIN dbo.sexratio
+         ON data.location = sexratio.country
+WHERE  continent IS NOT NULL
+GROUP  BY location
+--ORDER  BY 11 DESC,12 DESC 
+
+select * from smoker_stats
